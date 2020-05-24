@@ -31,7 +31,7 @@ class AdminPage {
             'menuLabel' => $settings['menuLabel'] ?? "{$plugin[name]}",
             'pageTitle' => $settings['pageTitle'] ?? "{$plugin[name]} Settings",
 
-            'pageSlug' => $this->plugin->getSlug($settings['pageSlug'] ?? 'page'),
+            'pageSlug' => $this->plugin->getSlug($settings['pageSlug'] ?? 'admin'),
             'optionsSlug' => $this->plugin->getSlug($settings['optionsSlug'] ?? 'options'),
         ]);
     }
@@ -57,7 +57,7 @@ class AdminPage {
         if (!current_user_can($this->settings['permission'])) {
             wp_die(__( 'You do not have sufficient permissions to access this page.'));
         }
-        $this->plugin->render($this->settings['template'], []);
+        $this->plugin->render($this->settings['template'], $this->settings);
     }
 
     /**
@@ -89,6 +89,7 @@ class AdminPage {
             default:
                 call_user_func_array('add_menu_page', $options);
         }
+
         return $this;
     }
 
@@ -103,8 +104,8 @@ class AdminPage {
      */
     public function registerSettingsPage() {
         register_setting(
-            $this->plugin->getSlug($this->settings['pageSlug']),
-            $this->plugin->getSlug($this->settings['optionsSlug'])
+            $this->settings['pageSlug'],
+            $this->settings['optionsSlug']
         );
     }
 
@@ -118,12 +119,20 @@ class AdminPage {
      * - `string 'title'` HTML for the section's title.
      * - `string 'callback'` function rendering the top of the setion.
      */
-    public function registerSettingsPageSection(array $options = []) {
-        add_settings_section(
-            $this->plugin->getSlug($options['section'] ?? mt_rand()),
-            $this->plugin->$options['title'] ?? null,
-            $this->plugin->$options['callback'] ?? function () { echo('<p>Section content.</p>'); },
-            $this->plugin->getSlug($options['page'] ?? null),
-        );
+    public function addSections(array $sections = []) {
+        add_action('admin_init', function() use ($sections) {
+            foreach($sections as $section) {
+                add_settings_section(
+                    $section['id'] ?? 'id-' . mt_rand(),
+                    $section['title'] ?? null,
+                    [$this, 'renderSection'],
+                    $this->settings['pageSlug']
+                );
+            }
+        });
+    }
+
+    public function renderSection($section) {
+        $this->plugin->render($this->settings['sectionTemplate'], $section);
     }
 }
