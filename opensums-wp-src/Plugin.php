@@ -62,6 +62,19 @@ class Plugin {
     }
 
     /**
+     * Get a prefixed slug.
+     *
+     * @param string $path The slug to be prefixed.
+     * @return string The slug with an added prefix.
+     */
+    public function getSlug(string $slug = null): string {
+        if ($slug === null) {
+            return $this->slug;
+        }
+        return "{$this->slug}-{$slug}";
+    }
+
+    /**
      * Get all the values.
      *
      * @return mixed[] The values.
