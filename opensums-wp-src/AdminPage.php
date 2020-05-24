@@ -55,9 +55,20 @@ class AdminPage {
      */
     public function renderSettingsPage():void {
         if (!current_user_can($this->settings['permission'])) {
-            wp_die(__( 'You do not have sufficient permissions to access this page.'));
+            wp_die(__('You do not have sufficient permissions to access this page.'));
         }
-        $this->plugin->render($this->settings['template'], $this->settings);
+        $vars = $this->settings;
+        $vars['messagesSlug'] = $this->plugin->getSlug('messages');
+        if (isset($_GET['settings-updated'])) {
+            // add settings saved message with the class of "updated"
+            add_settings_error(
+                $this->plugin->getSlug('messages'),
+                $this->plugin->getSlug('message'),
+                __('Settings Saved', $this->settings['pageSlug']),
+                'updated' // CSS class.
+            );
+        }
+        $this->plugin->render($this->settings['template'], $vars);
     }
 
     /**
@@ -106,18 +117,14 @@ class AdminPage {
         register_setting(
             $this->settings['pageSlug'],
             $this->settings['optionsSlug']
-        );
+       );
     }
 
     /**
-     * Settings are managed in groups, each group has a page.
      * 
-     * @param mixed[] $options The options for the group.
-     * - `string 'page'` The slug for the admin page to manage this group
-     *   (defaults to the plugin slug).
-     * - `string 'section'` The slug for the admin page section.
+     * @param mixed[] $sections An array of sections. Each section is an array:
+     * - `string 'id'` The id for the admin page section.
      * - `string 'title'` HTML for the section's title.
-     * - `string 'callback'` function rendering the top of the setion.
      */
     public function addSections(array $sections = []) {
         add_action('admin_init', function() use ($sections) {
@@ -127,9 +134,91 @@ class AdminPage {
                     $section['title'] ?? null,
                     [$this, 'renderSection'],
                     $this->settings['pageSlug']
-                );
+               );
             }
         });
+    }
+
+    /**
+     * 
+     * @param mixed[] $sections An array of sections. Each section is an array:
+     * - `string 'id'` The id for the admin page section.
+     * - `string 'title'` HTML for the section's title.
+     */
+    public function addFields(array $fields = []) {
+        add_action('admin_init', function() use ($fields) {
+            foreach($fields as $field) {
+                add_settings_field(
+                    $field['id'],
+                    $field['label'],
+                    [$this, 'renderField'],
+                    $this->settings['pageSlug'],
+                    $field['section'],
+                    $field
+                );
+                register_setting($this->settings['pageSlug'], $field['id']);
+            }
+        });
+    }
+
+    /**
+     * @see https://www.smashingmagazine.com/2016/04/three-approaches-to-adding-configurable-fields-to-your-plugin/
+     */
+    public function renderField($field) {
+        $value = get_option($field['id']); // Get the current value, if there is one
+        if(! $value) { // If no value exists
+            $value = $field['default']; // Set to our default
+        }
+
+        // Check which type of field we want
+        switch ($field['type']) {
+            case 'text': // If it is a text field
+                printf(
+                    '<input name="%1$s" id="%1$s" type="%2$s" placeholder="%3$s" value="%4$s" />',
+                    $field['id'],
+                    $field['type'],
+                    $field['placeholder'],
+                    $value
+                );
+                break;
+            case 'textarea': // If it is a textarea
+                printf(
+                    '<textarea name="%1$s" id="%1$s" placeholder="%2$s" rows="5" cols="50">%3$s</textarea>',
+                    $field['id'],
+                    $field['placeholder'],
+                    $value
+                );
+                break;
+            case 'select': // If it is a select dropdown
+                if(!empty($field['options']) && is_array($field['options'])) {
+                    $options_markup = '';
+                    foreach($field['options'] as $key => $label){
+                        $options_markup .= sprintf(
+                            '<option value="%s" %s>%s</option>',
+                            $key,
+                            selected($value, $key, false),
+                            $label
+                        );
+                    }
+                    printf(
+                        '<select name="%1$s" id="%1$s">%2$s</select>',
+                        $field['id'],
+                        $options_markup
+                    );
+                }
+                break;
+            default:
+        }
+
+        // If there is help text
+        if($helper = $field['helper']){
+            printf('<span class="helper"> %s</span>', $helper); // Show it
+        }
+
+        // If there is supplemental text
+        if($supplemental = $field['supplemental']){
+            printf('<p class="description">%s</p>', $supplemental); // Show it
+        }
     }
 
     public function renderSection($section) {

@@ -1,22 +1,8 @@
 
 <div class="wrap">
 
-<?php
-/*
-    // add error/update messages
- 
- // check if the user have submitted the settings
- // wordpress will add the "settings-updated" $_GET parameter to the url
- if ( isset( $_GET['settings-updated'] ) ) {
- // add settings saved message with the class of "updated"
- add_settings_error( 'wporg_messages', 'wporg_message', __( 'Settings Saved', 'wporg' ), 'updated' );
- }
- 
- // show error/update messages
- settings_errors( 'wporg_messages' );
- ?>
-*/
-?>
+<?php settings_errors($messagesSlug) ?>
+
 <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
 <form action="options.php" method="post">
