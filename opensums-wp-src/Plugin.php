@@ -1,10 +1,14 @@
 <?php
+/**
+ */
 
 namespace OpenSumsWp;
 
+/**
+ */
 class Plugin {
 
-    /** @var self Singleton instance. */
+    /** @var self $instance Singleton instance. */
     protected static $instance;
 
     /** @var string Plugin name. */
@@ -22,7 +26,7 @@ class Plugin {
     /** @var mixed[] Configuration etc. */
     protected $values;
 
-    protected function __construct($path) {
+    protected function __construct(string $path) {
         $this->path = $path;
         $this->name = static::NAME;
         $this->slug = static::SLUG;
@@ -40,14 +44,26 @@ class Plugin {
         }
     }
 
-    public static function getInstance($path) {
+    /**
+     * Get the singleton instance.
+     *
+     * @param string $path The plugin's base path.
+     * @return self  The singleton instance of the plugin.
+     */
+    public static function getInstance(string $path = null): self {
         if (!isset(static::$instance)) {
             static::$instance = new static($path);
         }
         return static::$instance;
     }
 
-    public function get($key) {
+    /**
+     * Set a value for use as a container.
+     *
+     * @param string $key The key.
+     * @return mixed The value.
+     */
+    public function get(string $key) {
         return $this->values[$key];
     }
 
