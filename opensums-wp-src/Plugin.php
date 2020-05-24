@@ -8,8 +8,8 @@ namespace OpenSumsWp;
  */
 class Plugin {
 
-    /** Name of the class to load an admin page. */
-    protected $adminLoaderClass;
+    /** Name of the admin class for this plugin. */
+    protected $adminClass;
 
     /** @var self $instance Singleton instance. */
     protected static $instance;
@@ -42,32 +42,10 @@ class Plugin {
         // Load the module hooks.
         $this->load();
         // Load the module admin hooks.
-        $cls = $this->adminLoaderClass ?? null;
+        $cls = $this->adminClass ?? null;
         if (is_admin() && $cls) {
             new $cls($this);
         }
-    }
-
-    /**
-     * Add a page under 'Settings' in the Admin menu.
-     *
-     * @param mixed{} $options Options for the menu entry.
-     * - `title => string` <title> tag for the page.
-     * - `label => string` Label for the menu entry.
-     * - `permission => string` Permission required to show the entry.
-     * - `slug => string` Unique slug used in the URI query string.
-     * - `callback => callable` The action to call.
-     * @return self Chainable.
-     */
-    public function addSettingsPage(array $settings = []): self {
-        \add_options_page(
-            $settings['title'] ?? "{$this->name} Settings", // html <title>
-            $settings['label'] ?? "{$this->name}", // Menu label
-            $settings['permission'] ?? 'manage_options', // Permission required
-            $settings['slug'] ?? "{$this->slug}-options", // Slug
-            $settings['callback'] ?? function () { echo("<h2>{$this->name}</h2>"); }, // Callback
-        );
-        return $this;
     }
 
     /**
@@ -81,6 +59,15 @@ class Plugin {
             static::$instance = new static($path);
         }
         return static::$instance;
+    }
+
+    /**
+     * Get all the values.
+     *
+     * @return mixed[] The values.
+     */
+    public function all() {
+        return $this->values;
     }
 
     /**
@@ -108,6 +95,4 @@ class Plugin {
     }
 
     protected function load() {}
-
-    protected function loadAdmin() {}
 }

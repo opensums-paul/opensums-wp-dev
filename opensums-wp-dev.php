@@ -114,24 +114,6 @@ function wporg_settings_init() {
     <?php
    }
     
-   /**
-    * top level menu
-    */
-   function wporg_options_page() {
-    // add top level menu page
-    add_menu_page(
-    'WPOrg',
-    'WPOrg Options',
-    'manage_options',
-    'wporg',
-    'wporg_options_page_html'
-    );
-   }
-    
-   /**
-    * register our wporg_options_page to the admin_menu action hook
-    */
-   add_action( 'admin_menu', 'wporg_options_page' );
     
    /**
     * top level menu:

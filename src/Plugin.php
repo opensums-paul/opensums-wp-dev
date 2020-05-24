@@ -14,6 +14,9 @@ namespace OpenSumsWpDev;
  */
 class Plugin extends \OpenSumsWp\Plugin {
 
+    /** Name of the admin class. */
+    protected $adminClass = Admin::class;
+
     /** Plugin name. */
     protected $name = 'OpenSums Development';
 
@@ -23,6 +26,4 @@ class Plugin extends \OpenSumsWp\Plugin {
     /** Current version. */
     protected $version = '1.0.0-dev';
 
-    /** Name of the admin class. */
-    protected $adminLoaderClass = Admin\Loader::class;
 }

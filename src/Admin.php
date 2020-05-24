@@ -1,25 +1,23 @@
 <?php
 
-namespace OpenSumsWpDev\Admin;
+namespace OpenSumsWpDev;
 
-class Loader {
+class Admin extends \OpenSumsWp\Admin {
 
-    protected $plugin;
-
-    public function __construct($plugin) {
-        $this->plugin = $plugin;
-        $this->load();
-    }
-
-    public function adminMenu() {
-        $this->plugin->addSettingsPage([
+    public function loadAdminMenu() {
+        $this->addAdminMenuEntry([
+            'parent' => 'settings',
             'callback' => [$this, 'renderSettingsPage'],
         ]);
     }
 
     protected function load() {
         // Add my entry to the admin menu.
-        add_action('admin_menu', [$this, 'adminMenu']);
+        add_action('admin_menu', [$this, 'loadAdminMenu']);
+        /**
+        * register our wporg_options_page to the admin_menu action hook
+        */
+        add_action( 'admin_menu', 'wporg_options_page');
     }
 
     // --- Refactor after here -------------------------------------------------
