@@ -1,6 +1,6 @@
 
 <div class="wrap">
-<p>Settings page.</p>
+<h1>Settings page.</h1>
 <p>Name <?php echo $plugin['name'] ?></p>
 <p>Version <?php echo $plugin['version'] ?></p>
 </div>

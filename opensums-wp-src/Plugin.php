@@ -8,29 +8,29 @@ namespace OpenSumsWp;
  */
 class Plugin {
 
+    /** Name of the class to load an admin page. */
+    protected $adminLoaderClass;
+
     /** @var self $instance Singleton instance. */
     protected static $instance;
 
     /** @var string Plugin name. */
     protected $name;
 
-    /** @var string Plugin slug (aka text domain). */
-    protected $slug;
-
     /** @var string Path to the plugin. */
     protected $path;
 
-    /** @var string Current version. */
-    protected $version;
+    /** @var string Plugin slug (aka text domain). */
+    protected $slug;
 
     /** @var mixed[] Configuration etc. */
     protected $values;
 
+    /** @var string Current version. */
+    protected $version;
+
     protected function __construct(string $path) {
         $this->path = $path;
-        $this->name = static::NAME;
-        $this->slug = static::SLUG;
-        $this->version = static::VERSION;
         $this->values = [
             'plugin' => [
                 'name' => $this->name,
@@ -38,10 +38,36 @@ class Plugin {
                 'version' => $this->version,
             ],
         ];
+
+        // Load the module hooks.
         $this->load();
-        if (is_admin()) {
-            $this->loadAdmin();
+        // Load the module admin hooks.
+        $cls = $this->adminLoaderClass ?? null;
+        if (is_admin() && $cls) {
+            new $cls($this);
         }
+    }
+
+    /**
+     * Add a page under 'Settings' in the Admin menu.
+     *
+     * @param mixed{} $options Options for the menu entry.
+     * - `title => string` <title> tag for the page.
+     * - `label => string` Label for the menu entry.
+     * - `permission => string` Permission required to show the entry.
+     * - `slug => string` Unique slug used in the URI query string.
+     * - `callback => callable` The action to call.
+     * @return self Chainable.
+     */
+    public function addSettingsPage(array $settings = []): self {
+        \add_options_page(
+            $settings['title'] ?? "{$this->name} Settings", // html <title>
+            $settings['label'] ?? "{$this->name}", // Menu label
+            $settings['permission'] ?? 'manage_options', // Permission required
+            $settings['slug'] ?? "{$this->slug}-options", // Slug
+            $settings['callback'] ?? function () { echo("<h2>{$this->name}</h2>"); }, // Callback
+        );
+        return $this;
     }
 
     /**

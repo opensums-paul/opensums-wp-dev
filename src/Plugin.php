@@ -8,24 +8,21 @@
  * @license   MIT
  */
 namespace OpenSumsWpDev;
+
 /**
  * Main class for the OpenSums WP development plugin.
  */
 class Plugin extends \OpenSumsWp\Plugin {
 
     /** Plugin name. */
-    const NAME = 'OpenSums Development';
+    protected $name = 'OpenSums Development';
 
     /** Plugin slug (aka text domain). */
-    const SLUG = 'opensums-wp-dev';
+    protected $slug = 'opensums-wp-dev';
 
     /** Current version. */
-    const VERSION = '1.0.0-dev';
+    protected $version = '1.0.0-dev';
 
-    /**
-     * Load admin hooks.
-     */
-    protected function loadAdmin():void {
-        new Admin\Loader($this);
-    }
+    /** Name of the admin class. */
+    protected $adminLoaderClass = Admin\Loader::class;
 }
