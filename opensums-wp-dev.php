@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the OpenSums development package for WordPress.
  *
@@ -8,7 +9,7 @@
  * @license   MIT
  *
  * @wordpress ```
- * Plugin Name:       OpenSums development plugin 
+ * Plugin Name:       OpenSums development plugin
  * Description:       For testing and development of the OpenSums WordPress framework.
  * Version:           1.0.0-dev
  * Requires at least: 5.2 - check this
@@ -25,6 +26,6 @@
 
 defined('WPINC') || die;
 
-require_once(__DIR__.'/vendor/autoload.php');
+require_once(__DIR__ . '/vendor/autoload.php');
 
 OpenSumsWpDev\Plugin::getInstance(__DIR__);

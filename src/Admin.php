@@ -7,7 +7,7 @@ class Admin extends \OpenSumsWp\Admin {
     /** @var \OpenSumsWp\AdminPage The admin page. */
     protected $adminPage;
 
-    protected function load():void {
+    protected function load(): void {
         $this->adminPage = new \OpenSumsWp\AdminPage($this->plugin, [
             'template' => 'admin/settings-page',
             'sectionTemplate' => 'admin/settings-page-sections',

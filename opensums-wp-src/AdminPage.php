@@ -38,7 +38,7 @@ class AdminPage {
 
     /**
      * Add an entry for the plugin to the Admin menu.
-     * 
+     *
      * Invoked as a callback when the admin menu is being created.
      */
     public function loadAdminMenu(): void {
@@ -50,10 +50,10 @@ class AdminPage {
 
     /**
      * Show the settings page.
-     * 
+     *
      * Invoked as a callback when the realted admin menu item is selected.
      */
-    public function renderSettingsPage():void {
+    public function renderSettingsPage(): void {
         if (!current_user_can($this->settings['permission'])) {
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
@@ -105,34 +105,34 @@ class AdminPage {
     }
 
     /**
-     * 
+     *
      * @param mixed[] $sections An array of sections. Each section is an array:
      * - `string 'id'` The id for the admin page section.
      * - `string 'title'` HTML for the section's title.
      */
     public function addSections(array $sections = []) {
-        add_action('admin_init', function() use ($sections) {
-            foreach($sections as $section) {
+        add_action('admin_init', function () use ($sections) {
+            foreach ($sections as $section) {
                 add_settings_section(
                     $section['id'] ?? 'id-' . mt_rand(),
                     $section['title'] ?? null,
                     [$this, 'renderSection'],
                     $this->settings['pageSlug']
-               );
+                );
             }
         });
     }
 
     /**
-     * 
+     *
      * @param mixed[] $sections An array of sections. Each section is an array:
      * - `string 'id'` The id for the admin page section.
      * - `string 'title'` HTML for the section's title.
      */
     public function addFields(array $fields = []) {
-        add_action('admin_init', function() use ($fields) {
+        add_action('admin_init', function () use ($fields) {
             $groups = [];
-            foreach($fields as $field) {
+            foreach ($fields as $field) {
                 // Use label_for in preference to id (since WP 4.6).
                 $field['label_for'] = $field['label_for'] ?? $field['id'];
                 $field['id'] = $field['label_for'];
@@ -165,7 +165,7 @@ class AdminPage {
     public function renderField($field) {
         $values = get_option($this->plugin->getSlug($field[group])); // Get the current value, if there is one
         $value = $values[$field['name']];
-        if(! $value) { // If no value exists
+        if (!$value) { // If no value exists
             $value = $field['default']; // Set to our default
         }
 
@@ -193,9 +193,9 @@ class AdminPage {
                 );
                 break;
             case 'select': // If it is a select dropdown
-                if(!empty($field['options']) && is_array($field['options'])) {
+                if (!empty($field['options']) && is_array($field['options'])) {
                     $options_markup = '';
-                    foreach($field['options'] as $key => $label){
+                    foreach ($field['options'] as $key => $label) {
                         $options_markup .= sprintf(
                             '<option value="%s" %s>%s</option>',
                             $key,
@@ -215,12 +215,12 @@ class AdminPage {
         }
 
         // If there is help text
-        if($helper = $field['helper']){
+        if ($helper = $field['helper']) {
             printf('<span class="helper"> %s</span>', $helper); // Show it
         }
 
         // If there is supplemental text
-        if($supplemental = $field['supplemental']){
+        if ($supplemental = $field['supplemental']) {
             printf('<p class="description">%s</p>', $supplemental); // Show it
         }
     }

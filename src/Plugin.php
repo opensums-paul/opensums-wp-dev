@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the OpenSums development package for WordPress.
  *
@@ -7,6 +8,7 @@
  * @copyright [OpenSums](https://opensums.com/)
  * @license   MIT
  */
+
 namespace OpenSumsWpDev;
 
 /**
@@ -25,5 +27,4 @@ class Plugin extends \OpenSumsWp\Plugin {
 
     /** Current version. */
     protected $version = '1.0.0-dev';
-
 }

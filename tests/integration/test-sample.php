@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class SampleTest
  *
@@ -8,11 +9,12 @@
 namespace OpenSumsWp;
 
 class PluginTest extends \WP_UnitTestCase {
-    const REGEXP = '/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*'
+
+    protected const REGEXP = '/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*'
         . '|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z'
         . '-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/';
 
-    public function test_should_have_a_semver_version() {
+    public function testShouldHaveASemverVersion() {
 
         $plugin = \OpenSumsWpDev\Plugin::getInstance();
 

@@ -1,5 +1,7 @@
 <?php
+
 /**
+ * File header goes here.
  */
 
 namespace OpenSumsWp;
