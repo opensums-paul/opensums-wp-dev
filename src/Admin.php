@@ -4,6 +4,7 @@ namespace OpenSumsWpDev;
 
 class Admin extends \OpenSumsWp\Admin {
 
+    /** @var \OpenSumsWp\AdminPage The admin page. */
     protected $adminPage;
 
     protected function load():void {
@@ -63,6 +64,5 @@ class Admin extends \OpenSumsWp\Admin {
                 'default' => 'maybe',
             ],
         ]);
-
     }
 }
