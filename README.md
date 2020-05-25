@@ -1,4 +1,3 @@
-# OpenSums WP Plugin
+# OpenSums WP (development)
 
-OpenSums development plugin for WordPress.
-
+Framework for OpenSums plugins in WordPress™ - development 
