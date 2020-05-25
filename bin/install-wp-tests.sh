@@ -153,5 +153,3 @@ install_db() {
 install_wp
 install_test_suite
 install_db
-
-grep "wp_version =" "${WP_CORE_DIR}/wp-includes/version.php"
