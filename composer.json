@@ -1,0 +1,19 @@
+{
+    "name": "opensums/opensums-wp-dev",
+    "description": "OpenSums development plugin for WordPress (TM)",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "OpenSumsWpDev\\": "src/",
+            "OpenSumsWp\\": "opensums-wp-src/"
+        }
+    },
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    },
+    "scripts": {
+        "apidocs": "bash ./scripts/apidocs.sh",
+        "version": "bash ./scripts/version.sh"
+    }
+}
