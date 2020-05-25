@@ -105,22 +105,6 @@ class AdminPage {
     }
 
     /**
-     * Settings are managed in groups, each group has a page.
-     * 
-     * @param mixed[] $options The options for the group.
-     * - `string 'page'` The slug for the admin page to manage this group
-     *   (defaults to the plugin slug).
-     * - `string 'group'` The slug for the wp_options table (defaults to the
-     *   plugin slug).
-     */
-    public function registerSettingsPage() {
-        register_setting(
-            $this->settings['pageSlug'],
-            $this->settings['optionsSlug']
-       );
-    }
-
-    /**
      * 
      * @param mixed[] $sections An array of sections. Each section is an array:
      * - `string 'id'` The id for the admin page section.
@@ -147,7 +131,19 @@ class AdminPage {
      */
     public function addFields(array $fields = []) {
         add_action('admin_init', function() use ($fields) {
+            $groups = [];
             foreach($fields as $field) {
+                // Use label_for in preference to id (since WP 4.6).
+                $field['label_for'] = $field['label_for'] ?? $field['id'];
+                $field['id'] = $field['label_for'];
+
+                // Group names by group if provided, otherwise by section, and prefix.
+                $field['name'] = $field['name'] ?? $field['id'];
+                $field['group'] = $field['group'] ?? $field['section'];
+                $group = $this->plugin->getSlug($field['group']);
+                $groups[$group] = true;
+                $field['name_attr'] = "{$group}[{$field[name]}]";
+
                 add_settings_field(
                     $field['id'],
                     $field['label'],
@@ -156,7 +152,9 @@ class AdminPage {
                     $field['section'],
                     $field
                 );
-                register_setting($this->settings['pageSlug'], $field['id']);
+            }
+            foreach (array_keys($groups) as $group) {
+                register_setting($this->settings['pageSlug'], $group);
             }
         });
     }
@@ -165,7 +163,8 @@ class AdminPage {
      * @see https://www.smashingmagazine.com/2016/04/three-approaches-to-adding-configurable-fields-to-your-plugin/
      */
     public function renderField($field) {
-        $value = get_option($field['id']); // Get the current value, if there is one
+        $values = get_option($this->plugin->getSlug($field[group])); // Get the current value, if there is one
+        $value = $values[$field['name']];
         if(! $value) { // If no value exists
             $value = $field['default']; // Set to our default
         }
@@ -174,8 +173,10 @@ class AdminPage {
         switch ($field['type']) {
             case 'text': // If it is a text field
                 printf(
-                    '<input name="%1$s" id="%1$s" type="%2$s" placeholder="%3$s" value="%4$s" />',
-                    $field['id'],
+                    '<input name="%1$s" id="%2$s" type="%3$s" placeholder="%4$s"'
+                        . ' value="%5$s" />',
+                    $field['name_attr'],
+                    $field['label_for'],
                     $field['type'],
                     $field['placeholder'],
                     $value
@@ -183,7 +184,9 @@ class AdminPage {
                 break;
             case 'textarea': // If it is a textarea
                 printf(
-                    '<textarea name="%1$s" id="%1$s" placeholder="%2$s" rows="5" cols="50">%3$s</textarea>',
+                    '<textarea name="%1$s" id="%2$s" placeholder="%3$s" rows="5"'
+                        . ' cols="50">%4$s</textarea>',
+                    $field['name_attr'],
                     $field['id'],
                     $field['placeholder'],
                     $value
@@ -201,7 +204,8 @@ class AdminPage {
                         );
                     }
                     printf(
-                        '<select name="%1$s" id="%1$s">%2$s</select>',
+                        '<select name="%1$s" id="%2$s">%3$s</select>',
+                        $field['name_attr'],
                         $field['id'],
                         $options_markup
                     );
