@@ -29,6 +29,7 @@ env:
 matrix:
   fast_finish: true
   include:
+
     # Run PHP_CodeSniffer
     - name: Coding standards
       php: 7.3
@@ -36,7 +37,7 @@ matrix:
 
     # Canary for our oldest-supported version
     - name: Legacy
-      php: 7.1
+      php: 7.2
       env: WP_VERSION=4.9
  
     # Nightly versions of PHP and WordPress.
@@ -73,7 +74,8 @@ install:
 script:
   - |
     # Echo the directory
-    ls ../.. -l
+    ls ../../../.. -l
+  - |
     # If we've set the $WP_TRAVISCI variable to run PHPCS, do that instead
     # of running PHPUnit.
     if [[ "$WP_TRAVISCI" == "phpcs" ]]; then
