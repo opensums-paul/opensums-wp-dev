@@ -19,7 +19,7 @@ cache:
 matrix:
   include:
     # Next PHP
-    - php: 7.5
+    - php: nightly
       env: WP_VERSION=latest
     # Latest PHP, stable WP
     - php: 7.4
