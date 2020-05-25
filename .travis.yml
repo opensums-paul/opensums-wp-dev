@@ -37,7 +37,7 @@ matrix:
 
     # Canary for our oldest-supported version
     - name: Legacy
-      php: 7.2
+      php: 5.6
       env: WP_VERSION=4.9
  
     # Nightly versions of PHP and WordPress.
@@ -58,16 +58,20 @@ before_install:
   - phpenv config-rm xdebug.ini || return 0
 
 install:
-  # Install our Composer dependencies
-  - composer install --prefer-dist --no-interaction
 
-  # Install an older version of PHPUnit if we're still running PHP 5.6.
+  # Install an older version of PHPUnit if we can't support v7.
   - |
-    if [[ "$TRAVIS_PHP_VERSION" == "5.6" ]]; then
-      wget -O ./vendor/bin/phpunit https://phar.phpunit.de/phpunit-5.phar
-      chmod +x ./vendor/bin/phpunit
+    if [[ "$TRAVIS_PHP_VERSION" < "7.2" ]]; then
+      composer remove phpunit/phpunit --no-update --dev
+      composer require phpunit/phpunit ^5 --dev
     fi
- 
+
+  # Run Composer
+  # - composer update 
+
+  # Install our Composer dependencies
+  - composer install --no-interaction
+
   # Install the WordPress core test suite
   - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
 
