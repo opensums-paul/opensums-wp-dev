@@ -18,19 +18,24 @@ cache:
 
 matrix:
   include:
+    # Next PHP
+    - php: 7.5
+      env: WP_VERSION=latest
+    # Latest PHP, stable WP
+    - php: 7.4
+      env: WP_VERSION=5.4.1
     # Latest PHP
     - php: 7.4
-      env: WP_VERSION=latest
-    # Current PHP
-    - php: 7.3
       env: WP_VERSION=latest
     # Older supported PHP
     - php: 7.3
       env: WP_VERSION=latest
     - php: 7.2
       env: WP_VERSION=latest
-    - php: 7.1
-      env: WP_VERSION=latest
+    # PHP at EOL
+    # - php: 7.1
+    #   env: WP_VERSION=latest
+    # Oldest PHP that passes tests
     - php: 7.0
       env: WP_VERSION=latest
     # PHP < 7 not supported.
