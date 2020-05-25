@@ -72,6 +72,8 @@ install:
 
 script:
   - |
+    # Echo the directory
+    ls ../.. -l
     # If we've set the $WP_TRAVISCI variable to run PHPCS, do that instead
     # of running PHPUnit.
     if [[ "$WP_TRAVISCI" == "phpcs" ]]; then
