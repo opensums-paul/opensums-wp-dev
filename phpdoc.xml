@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+  <title>Dutyman plugin for WordPress™ v1.0.0-dev</title>
+  <parser>
+    <target>docs/temp</target>
+  </parser>
+
+  <transformer>
+    <target>docs/api</target>
+  </transformer>
+
+  <logging>
+    <level>crit</level>
+  </logging>
+
+  <transformations>
+      <template name="clean" />
+  </transformations>
+
+  <files>
+    <file>dutyman.php</file>
+    <directory>src</directory>
+    <directory>opensums-wp-src</directory>
+  </files>
+</phpdoc>
